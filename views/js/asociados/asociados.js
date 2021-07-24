@@ -112,6 +112,13 @@ $('#tableAsociados').on('click', '.eliminar', function() {
             console.log(response);
             if (response.status) {
                 $("#row" + id).remove();
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Asociado Eliminado',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
             }
         }
     });
