@@ -1,4 +1,4 @@
-<div class="container">
+<div class="ml-5 mr-5">
 
     <div class="alert alert-info mt-5 mx-auto" style="width: 20rem;">
         Usuario en Sesion
@@ -25,7 +25,7 @@
             <h5>Asociados</h5>
         </div>
         <div class="card-body">
-        <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#exampleModal">
+        <button type="button" class="mb-3 btn btn-dark" data-toggle="modal" data-target="#exampleModal">
             Agregar
         </button>
     
@@ -55,8 +55,9 @@
                             <td id="tableProfesionId"> <?= $asociado->profesion ?> </td>
                             <td id="tableAgenciaId"> <?= $asociado->agencia ?> </td>
                             <td id="table">
-                                <button class="btn btn-warning editar m-1" idAsociado="<?= $asociado->id ?>" id="editarAsociado" data-toggle="modal" data-target="#exampleModal"><i class="bi bi-pen-fill"></i></button>
-                                <button class="btn btn-danger eliminar m-1" idAsociado="<?= $asociado->id ?>" id="eliminarAsociado"><i class="bi bi-trash"></i></button>
+                                <a class="btn btn-sm btn-info" href="index.php?controller=Asociados&action=historial&id=<?=$asociado->id ?>">Historial</a>
+                                <button class="btn btn-sm btn-warning editar m-1" idAsociado="<?= $asociado->id ?>" id="editarAsociado" data-toggle="modal" data-target="#exampleModal"><i class="bi bi-pen-fill"></i></button>
+                                <button class="btn btn-sm btn-danger eliminar m-1" idAsociado="<?= $asociado->id ?>" id="eliminarAsociado"><i class="bi bi-trash"></i></button>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -81,7 +82,10 @@
       <form id="formAsociados">
       <div class="modal-body">
             <div class="row">
-                <div class="col">
+
+            <input type="hidden" class="form-control" id="txtId" name="id" value="">
+                
+            <div class="col">
                     <label for="formGroupExampleInput">Nombre</label>
                     <input type="text" class="form-control" id="txtNombre" name="nombre" placeholder="Ejemplo: Jonathan">
                     <div class="valid-feedback">
@@ -147,7 +151,7 @@
             <div class="row">
                 <div class="col">
                     <label for="txtProdesion">Profesion/Oficio</label>
-                    <select class="form-control" id="txtProdesion" name="profesion_id">
+                    <select class="form-control" id="txtProfesion" name="profesion_id">
                         <?php foreach ($profesiones as $profesion ) : ?>                
                             <option value="<?= $profesion->id ?>"><?= $profesion->profesion ?></option>
                         <?php endforeach; ?>
@@ -155,7 +159,7 @@
                 </div>
                 <div class="col">
                     <label for="txtAgenda">Agencia</label>
-                    <select class="form-control" id="txtAgenda" name="agencia_id">
+                    <select class="form-control" id="txtAgencia" name="agencia_id">
                         <?php foreach ($agencias as $agencia ) : ?>                
                             <option value="<?= $agencia->id ?>"><?= $agencia->agencia ?></option>
                         <?php endforeach; ?>

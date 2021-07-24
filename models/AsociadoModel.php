@@ -7,8 +7,8 @@ class AsociadoModel extends Persona
 {
 
     private $db;
-    private $profesion_id;
-    private $agencia_id;
+    public $profesion_id;
+    public $agencia_id;
 
     function __construct(){
         $db = Conexion::conectar();
@@ -18,11 +18,15 @@ class AsociadoModel extends Persona
     }
 
     function getAll(){
-        $sql = "SELECT a.id, a.nombre,a.apellido, a.edad, a.direccion, a.dui, a.nit, p.profesion, u.agencia FROM asociados as a inner join profesiones as p on a.profesion_id=p.id INNER join agencias as u on a.agencia_id=u.id";
+        $sql = "call getAsociados(?)";
         $pdo = $this->db->prepare( $sql );
+        $pdo->bindValue(1, $this->id, PDO::PARAM_INT);
         $pdo->execute();
 
-        return $pdo->fetchAll( PDO::FETCH_OBJ) ;
+        if ( $this->id == NULL ) {
+            return $pdo->fetchAll( PDO::FETCH_OBJ) ;
+        }
+        return $pdo->fetch(PDO::FETCH_OBJ);
     }
 
     function save(){
@@ -48,6 +52,26 @@ class AsociadoModel extends Persona
 
         return $response;
     }
+
+    function eliminar() {
+        
+        $response = new stdClass();
+
+        $sql = "call eliminarAsociado(?)";
+        $pdo = $this->db->prepare( $sql );
+        $pdo->bindValue(1, $this->id, PDO::PARAM_INT);
+        
+        if ( $pdo->execute() ){
+            $response->mensaje = "El usuario fue eliminado";
+            $response->status = true;
+        } else {
+            $response->mensaje = "Algo salio mal";
+            $response->status = false;
+        }
+        
+        return $response;
+    }
+    
 
     function setProfesion($profesion_id) { $this->profesion_id = $profesion_id; }
 

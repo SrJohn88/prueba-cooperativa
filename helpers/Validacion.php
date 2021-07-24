@@ -57,7 +57,13 @@ class Validacion{
                 $this->errors[$name] = "Campo ".$name.' no cumple con el formato solictado';
             }
         }
-        
+    }
+
+    static function isEmail( $value ){
+        if( preg_match('/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/', $value) ){
+            return true;
+        }
+        return false;
     }
 
 }

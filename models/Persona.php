@@ -2,13 +2,13 @@
 
 class Persona
 {
-    protected $id;
-    protected $nombre;
-    protected $apellido;
-    protected $edad;
-    protected $dui;
-    protected $nit;
-    protected $direccion;
+    public $id;
+    public $nombre;
+    public $apellido;
+    public $edad;
+    public $dui;
+    public $nit;
+    public $direccion;
 
     function setId($id) { $this->id = $id; }
 

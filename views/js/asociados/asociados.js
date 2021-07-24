@@ -3,6 +3,42 @@ const inputs = formulario.querySelectorAll('#formAsociados input');
 const textarea = document.getElementById('txtDireccion');
 
 
+//JQUERI PARA PETICION (OBTENER UN USUARIO POR ID )
+$("#tableAsociados").on("click", ".editar", function() {
+    const id = $(this).attr('idAsociado');
+    console.log(id);
+
+    $.ajax({
+        url: 'controllers/Api/AsociadosApiController.php',
+        data: {
+            metodo: 'GET',
+            id: id
+        },
+        method: "GET",
+        dataType: 'JSON',
+        success: function(json) {
+            console.log(json);
+            trueForm();
+            $('#txtNombre').val(json['nombre']);
+            $('#txtApellido').val(json['apellido']);
+            $('#txtEdad').val(json['edad']);
+            $('#txtDireccion').val(json['direccion']);
+            $('#txtDui').val(json['dui']);
+            $('#txtNit').val(json['nit']);
+            $('#txtProfesion option[value="' + json['profesion_id'] + '"]').attr('selected', 'selected');
+            $('#txtAgencia option[value="' + json['agencia_id'] + '"]').attr('selected', 'selected');
+            $('#txtId').val(json['id']);
+        },
+        error: function(xhr, status) {
+            //console.log(status);
+            console.log('Disculpe, existió un problema');
+        },
+        complete: function(xhr, status) {
+            console.log('Petición realizada');
+        }
+    });
+});
+
 // JQUERY PETICION PARA INSERTAR DATOS
 $('#formAsociados').on('submit', function(e) {
     e.preventDefault();
@@ -22,11 +58,19 @@ $('#formAsociados').on('submit', function(e) {
                 var asociado = json.objeto;
                 console.log(asociado)
                 if (json.status) {
+                    $('#exampleModal').modal('hide')
                     if (json.accion === 'update') {
                         update(asociado.id, asociado.nombre, asociado.apellido, asociado.direccion, asociado.edad, asociado.dui, asociado.nit, asociado.profesion, asociado.agencia)
                     } else {
                         insert(asociado.id, asociado.nombre, asociado.apellido, asociado.direccion, asociado.edad, asociado.dui, asociado.nit, asociado.profesion, asociado.agencia)
                     }
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Valores Almacenados',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
                 }
             },
             error: function(xhr, status) {
@@ -50,6 +94,30 @@ $('#formAsociados').on('submit', function(e) {
     }
 })
 
+//JQUERY PARA ELIMINACION LOGICA DE UN REGISTRO
+$('#tableAsociados').on('click', '.eliminar', function() {
+
+    const id = $(this).attr('idAsociado');
+    // console.log(id);
+
+    $.ajax({
+        url: 'controllers/Api/AsociadosApiController.php',
+        data: {
+            id,
+            metodo: 'DELETE'
+        },
+        method: 'GET',
+        dataType: 'JSON',
+        success: function(response) {
+            console.log(response);
+            if (response.status) {
+                $("#row" + id).remove();
+            }
+        }
+    });
+
+});
+
 const insert = function(id, nombre, apellido, direccion, edad, dui, nit, profesion, agencia) {
     $("#tableAsociados > tbody").append(
         `<tr id="row` + id + `">` +
@@ -63,6 +131,7 @@ const insert = function(id, nombre, apellido, direccion, edad, dui, nit, profesi
         `<td id="tableProfesionId">` + profesion + `</td>` +
         `<td id="tableAgenciaId">` + agencia + `</td>` +
         `<td>` +
+        `<a class="btn btn-sm btn-info" href="index.php?controller=Asociados&action=historial&id=<?=$asociado->id ?>">Historial</a>` +
         `<button class="btn btn-warning editar m-1" idAsociado="` + id + `" id="editarAsociado" data-toggle="modal" data-target="#exampleModal"><i class="bi bi-pen-fill"></i></button>` +
         `<button class="btn btn-danger eliminar m-1" idAsociado="` + id + `" id="eliminarAsociado"><i class="bi bi-trash"></i></button>` +
         `</td>` +
@@ -87,12 +156,12 @@ const update = function(id, nombre, apellido, direccion, edad, dui, nit, profesi
 // METODOS DE VALIDACION DE FORMULARIO JAVASCRIPT
 
 const rules = {
-    nombre: /^[A-Za-z0-9 ]{3,20}$/,
+    nombre: /^[A-Za-z ]{3,20}$/,
     apellido: /^[A-Za-z ]{4,20}$/,
     edad: /^[0-9]{2}$/,
     dui: /^[0-9]{8}-[0-9]{1}$/,
     nit: /^[0-9]{4}-[0-9]{6}-[0-9]{3}-[0-9]{1}$/,
-    direccion: /^[a-zA-Z0-9]{2,100}$/,
+    direccion: /^[a-zA-Z0-9 ]{2,100}$/,
 }
 
 const campos = {
@@ -150,3 +219,41 @@ inputs.forEach((input) => {
 
 textarea.addEventListener('keyup', validarFormulario)
 textarea.addEventListener('blur', validarFormulario)
+
+const trueForm = () => {
+    campos.txtNombre = true;
+    campos.txtApellido = true;
+    campos.txtDireccion = true;
+    campos.txtEdad = true;
+    campos.txtDui = true;
+    campos.txtNit = true;
+}
+
+$('#exampleModal').on('hidden.bs.modal', function(e) {
+
+    var nombre = $('#txtNombre');
+    nombre.val('');
+    nombre.removeClass(['is-valid', 'is-invalid'])
+
+    var apellido = $('#txtApellido')
+    apellido.val('')
+    apellido.removeClass(['is-valid', 'is-invalid'])
+
+    var edad = $('#txtEdad')
+    edad.val('')
+    edad.removeClass(['is-valid', 'is-invalid'])
+
+    var direccion = $('#txtDireccion')
+    direccion.val('')
+    direccion.removeClass(['is-valid', 'is-invalid'])
+
+    var dui = $('#txtDui')
+    dui.val('')
+    dui.removeClass(['is-valid', 'is-invalid'])
+
+    var nit = $('#txtNit')
+    nit.val('')
+    nit.removeClass(['is-valid', 'is-invalid'])
+
+    $('#txtId').val('');
+})
