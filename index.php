@@ -20,7 +20,7 @@
 <?php 
         require_once 'Controllers/AuthController.php';
         require_once 'Controllers/AsociadosController.php';
-
+ 
         if ( isset( $_GET['controller']) ) {
             $controllerName = $_GET['controller'].'Controller';
             if ( isset( $_GET['action'] ) ) {
@@ -28,9 +28,9 @@
                 $controller = new $controllerName();
                 $controller->$action();
             }
+        }else{
+            header('Location:index.php?controller=Asociados&action=index');
         }
-
-
 ?>
 
 

@@ -16,6 +16,7 @@ class AsociadosController{
 
     }
 
+    
     function index(){
         $agencia = new AgenciaModel();
         $agencias = $agencia->getAllAgencias();
