@@ -54,7 +54,6 @@ $('#formAsociados').on('submit', function(e) {
             dataType: 'JSON',
             success: function(json) {
                 console.log(json)
-                $('#exampleModal').modal('hide')
                 var asociado = json.objeto;
                 console.log(asociado)
                 if (json.status) {
@@ -68,6 +67,14 @@ $('#formAsociados').on('submit', function(e) {
                         position: 'top-end',
                         icon: 'success',
                         title: 'Valores Almacenados',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                } else {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: json.mensaje,
                         showConfirmButton: false,
                         timer: 1500
                     })

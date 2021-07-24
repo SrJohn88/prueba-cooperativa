@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 24-07-2021 a las 07:32:11
+-- Tiempo de generación: 24-07-2021 a las 08:44:21
 -- Versión del servidor: 5.7.24
 -- Versión de PHP: 7.4.21
 
@@ -62,6 +62,15 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `saveHistorial` (`_usuario_id` INT, 
     INSERT INTO historial (usuario_id, asociado_id, campo, antiguo, nuevo) VALUES(_usuario_id, _asociado_id, _campo, _old, _new);
 END$$
 
+DROP PROCEDURE IF EXISTS `uniqueDui`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `uniqueDui` (`_dui` VARCHAR(25), `_id` INT)  BEGIN
+    IF _id IS NULL THEN
+        SELECT * FROM asociados WHERE dui=_dui;
+    ELSEIF _id IS NOT NULL THEN
+        SELECT * FROM asociados WHERE dui=_dui AND id <> _id;
+END IF;
+END$$
+
 DELIMITER ;
 
 -- --------------------------------------------------------
@@ -109,22 +118,25 @@ CREATE TABLE IF NOT EXISTS `asociados` (
   PRIMARY KEY (`id`),
   KEY `pk_asociados_agencia` (`agencia_id`),
   KEY `pk_asociados_profesion` (`profesion_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `asociados`
 --
 
 INSERT INTO `asociados` (`id`, `nombre`, `apellido`, `direccion`, `edad`, `dui`, `nit`, `profesion_id`, `agencia_id`, `deleted_at`, `created_at`) VALUES
-(1, 'Marco', 'Verrati', 'Chalatenango Barrio el chile', 28, '12345678-9', '0406-231198-101-1', 1, 1, 0, '2021-07-24 06:24:14'),
+(1, 'Marcos', 'Verrati', 'Chalatenango Barrio el chile', 28, '12345678-9', '0406-231198-101-1', 1, 1, 0, '2021-07-24 06:24:14'),
 (2, 'Leonel Andres', 'Messi', 'Barrio El Calvario', 34, '23456789-1', '1234-102020-122-0', 2, 1, 0, '2021-07-24 06:25:37'),
 (3, 'Cristiano', 'Ronaldo', 'Portugal Barrio el centro', 35, '98652287-9', '0406-231198-101-1', 4, 3, 0, '2021-07-24 06:28:14'),
-(4, 'Andres', 'Iniesta', 'Canton rosario', 38, '92837211-1', '1000-234567-121-0', 3, 1, 0, '2021-07-24 06:29:11'),
+(4, 'Andres', 'Iniesta', 'Caserio Rosario', 38, '92837211-1', '1000-234567-121-0', 3, 4, 0, '2021-07-24 06:29:11'),
 (5, 'Xavi', 'Hernandez', 'frente a parque en spain', 39, '88883721-6', '1000-234567-121-0', 3, 2, 0, '2021-07-24 06:30:50'),
-(6, 'Luis', 'Suarez', 'Avenida Uruguay', 35, '21834787-4', '0406-231198-101-1', 3, 1, 0, '2021-07-24 06:34:47'),
+(6, 'Luis', 'Henrique', 'Avenida Spain', 50, '21834787-4', '0406-231198-101-1', 2, 1, 0, '2021-07-24 06:34:47'),
 (7, 'Rodrigo', 'De Paul', 'Colonia Argentina', 28, '02034201-9', '1000-234567-121-0', 2, 4, 0, '2021-07-24 06:40:53'),
 (8, 'Hector', 'Herrera', 'Caserio Nuevo Mexico', 33, '10037211-1', '1000-234567-121-0', 2, 1, 0, '2021-07-24 06:43:45'),
-(9, 'Pedri', 'Gonzales', 'cuidad de barcelona', 18, '57577211-1', '1000-234567-121-0', 1, 4, 0, '2021-07-24 06:51:41');
+(9, 'Pedri', 'Gonzales', 'cuidad de barcelona', 18, '57577211-1', '1000-234567-121-0', 1, 4, 0, '2021-07-24 06:51:41'),
+(10, 'Guillermo', 'Ochoa', 'Colonia las brisas', 32, '08629911-3', '1000-234567-121-0', 2, 1, 0, '2021-07-24 08:25:59'),
+(11, 'Alfonso', 'Alvarado', 'barrio san antonio', 21, '92837211-9', '1234-102020-122-0', 3, 2, 1, '2021-07-24 08:29:30'),
+(12, 'Sergio', 'Ramos', 'Barrio san jacinto', 34, '12125678-9', '0216-290980-101-1', 2, 2, 0, '2021-07-24 08:40:01');
 
 -- --------------------------------------------------------
 
@@ -144,7 +156,7 @@ CREATE TABLE IF NOT EXISTS `historial` (
   PRIMARY KEY (`id`),
   KEY `pk_historial_usuario` (`usuario_id`),
   KEY `pk_historial_asociado` (`asociado_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `historial`
@@ -156,7 +168,18 @@ INSERT INTO `historial` (`id`, `fecha`, `usuario_id`, `asociado_id`, `campo`, `a
 (3, '2021-07-24 07:20:09', 1, 8, 'edad', '31', '33'),
 (4, '2021-07-24 07:20:50', 1, 3, 'direccion', 'Barrio el centro', 'Portugal Barrio el centro'),
 (5, '2021-07-24 07:21:12', 1, 4, 'agencia_id', '4', '1'),
-(6, '2021-07-24 07:22:02', 1, 5, 'direccion', 'frente a parque', 'frente a parque en spain');
+(6, '2021-07-24 07:22:02', 1, 5, 'direccion', 'frente a parque', 'frente a parque en spain'),
+(7, '2021-07-24 07:55:39', 1, 1, 'nombre', 'Marco', 'Marcos'),
+(8, '2021-07-24 08:26:40', 1, 10, 'nombre', 'Memo', 'Guillermo'),
+(9, '2021-07-24 08:29:51', 1, 11, 'edad', '23', '21'),
+(10, '2021-07-24 08:31:52', 1, 6, 'apellido', 'Suarez', 'Henrique'),
+(11, '2021-07-24 08:31:52', 1, 6, 'edad', '35', '50'),
+(12, '2021-07-24 08:31:52', 1, 6, 'direccion', 'Avenida Uruguay', 'Avenida Spain'),
+(13, '2021-07-24 08:31:52', 1, 6, 'profesion_id', '3', '2'),
+(14, '2021-07-24 08:40:46', 1, 12, 'edad', '33', '34'),
+(15, '2021-07-24 08:40:46', 1, 12, 'direccion', 'Barrio las flores', 'Barrio san jacinto'),
+(16, '2021-07-24 08:42:09', 2, 4, 'direccion', 'Canton rosario', 'Caserio Rosario'),
+(17, '2021-07-24 08:42:09', 2, 4, 'agencia_id', '1', '4');
 
 -- --------------------------------------------------------
 

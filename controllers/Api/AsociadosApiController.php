@@ -1,6 +1,6 @@
 <?php 
 
-//Este session start Me quita la felicidad 2h 
+//Este session start Me quita la felicidad 40min 
 session_start();
 
 require_once '../../models/AsociadoModel.php';
@@ -39,45 +39,52 @@ class AsociadosApiController
         $accion = $asociado->getId() == null ? 'insert': 'update';
         $data->accion = $accion;
 
-        if ($asociado->getId() != null ){
-        
-            $asociadoBd =   $asociado->getAll();
-            $asociadoNew =  $asociado;
-
-            unset($asociadoBd->id);
-            unset($asociadoBd->profesion);
-            unset($asociadoBd->agencia);
-            unset($asociadoNew->id);
-
-            $asociadoBd = (array) $asociadoBd;
-            $asociadoNew = (array) $asociadoNew;
-            
-            $usuario_id = isset($_SESSION['auth']) ? $_SESSION['auth']->id : null;
-
-
-            foreach ($asociadoBd as $key => $value) {
-                if ( $value != $asociadoNew[$key] ){
-                    $historialModel = new HistorialModel();
-                    $historialModel->setUsuario( $usuario_id);
-                    $historialModel->setAsociado( $id );
-                    $historialModel->setCampo($key);
-                    $historialModel->setOld($value);
-                    $historialModel->setNew($asociadoNew[$key]);
-                    $historialModel->save();
-                }
-            }
-            $asociado->setId( $id );
-        }
-        
-        $response = $asociado->save();
-
-            if (  $response->status ) {
-                $data->status = true;
-                $data->objeto = $response->object;
-            }else {
+        if( $asociado->uniqueDui() ){
                 $data->status = false;
-                $data->mensaje = "Algo salio mal en el modelo";
+                $data->mensaje = "Dui ya existe";
+        }else {
+            if ($asociado->getId() != null ){
+        
+                $asociadoBd =   $asociado->getAll();
+                $asociadoNew =  $asociado;
+    
+                unset($asociadoBd->id);
+                unset($asociadoBd->profesion);
+                unset($asociadoBd->agencia);
+                unset($asociadoNew->id);
+    
+                $asociadoBd = (array) $asociadoBd;
+                $asociadoNew = (array) $asociadoNew;
+                
+                $usuario_id = isset($_SESSION['auth']) ? $_SESSION['auth']->id : null;
+    
+    
+                foreach ($asociadoBd as $key => $value) {
+                    if ( $value != $asociadoNew[$key] ){
+                        $historialModel = new HistorialModel();
+                        $historialModel->setUsuario( $usuario_id);
+                        $historialModel->setAsociado( $id );
+                        $historialModel->setCampo($key);
+                        $historialModel->setOld($value);
+                        $historialModel->setNew($asociadoNew[$key]);
+                        $historialModel->save();
+                    }
+                }
+                $asociado->setId( $id );
             }
+            
+            $response = $asociado->save();
+    
+                if (  $response->status ) {
+                    $data->status = true;
+                    $data->objeto = $response->object;
+                }else {
+                    $data->status = false;
+                    $data->mensaje = "Algo salio mal en el modelo";
+                }
+        }
+
+        
         echo json_encode( $data );
     }
 

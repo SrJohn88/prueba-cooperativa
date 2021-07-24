@@ -43,7 +43,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossorigin="anonymous"></script>
 
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.js"></script>
-<script type="text/javascript" src="views/js/DataTable/inicializar.js"></script>
 
 <script src="views/js/asociados/asociados.js"></script>
 <script src="views/js/Inicializar.js"></script>

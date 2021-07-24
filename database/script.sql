@@ -127,3 +127,15 @@ CREATE PROCEDURE getHistorial(
 )BEGIN
     SELECT u.nombre as usuario, a.id as asociado_id, a.nombre as asociado, h.* FROM historial as h inner join usuarios as u on u.id=h.usuario_id INNER JOIN asociados as a on a.id=h.asociado_id WHERE h.asociado_id=_asociado_id ORDER BY h.fecha DESC; 
 END; //
+
+DELIMITER //
+CREATE PROCEDURE uniqueDui(
+    _dui    varchar(25),
+    _id     INT
+)BEGIN
+    IF _id IS NULL THEN
+        SELECT * FROM asociados WHERE dui=_dui;
+    ELSEIF _id IS NOT NULL THEN
+        SELECT * FROM asociados WHERE dui=_dui AND id <> _id;
+END IF;
+END; //

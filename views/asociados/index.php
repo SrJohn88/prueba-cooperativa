@@ -118,7 +118,7 @@
             </div>
             <div class="row">
                 <div class="col">
-                    <label for="formGroupExampleInput">DUI</label>
+                    <label for="formGroupExampleInput">DUI (Unique)</label>
                     <input type="text" class="form-control" id="txtDui" name="dui" placeholder="05427753-9">
                     <div class="valid-feedback">
                       ¡ Se ve bien !

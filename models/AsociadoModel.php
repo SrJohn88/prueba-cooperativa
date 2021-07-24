@@ -72,6 +72,18 @@ class AsociadoModel extends Persona
         return $response;
     }
     
+    function uniqueDui(){
+        $sql = "call uniqueDui(?, ?)";
+        $pdo = $this->db->prepare( $sql );
+        $pdo->bindValue(1, $this->dui, PDO::PARAM_STR);
+        $pdo->bindValue(2, $this->id, PDO::PARAM_INT);
+        $pdo->execute();
+
+        if ( $pdo->rowCount() > 0 ){
+            return true;
+        }
+        return false;
+    }
 
     function setProfesion($profesion_id) { $this->profesion_id = $profesion_id; }
 
